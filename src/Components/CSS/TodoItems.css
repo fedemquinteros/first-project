@@ -19,3 +19,8 @@
     cursor: pointer;
     padding-right: 25px;
 }
+.line-through{
+    text-decoration: line-through solid #adadad 3px;
+    
+
+}

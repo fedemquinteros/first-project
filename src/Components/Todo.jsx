@@ -10,13 +10,25 @@ const Todo = () => {
     const inputRef = useRef(null);
 
     const add = () => {
-        setTodos([...todos, { no: count++, text: inputRef.current.value, display: "" }]);
-        inputRef.current.value = "";
+        const newTask = inputRef.current.value.trim();
+        if (newTask.length > 0) {
+            setTodos([...todos, { no: count++, text: inputRef.current.value, display: "" }]);
+            inputRef.current.value = "";
+            localStorage.setItem("todos_count", count);
+        }else{
+            alert("Por favor añada una tarea");}
 
+
+    }
+    const HandleKeydown = (e) => {
+        if (e.key === "Enter") {
+            add();
+        }
     }
     useEffect(() => {
         setTodos(JSON.parse(localStorage.getItem("todos")));
-    },[ ])
+        count = localStorage.getItem("todos_count");
+    }, [])
 
     useEffect(() => {
         setTimeout(() => {
@@ -24,19 +36,19 @@ const Todo = () => {
             localStorage.setItem("todos", JSON.stringify(todos));
 
 
-        },100);
+        }, 100);
     }, [todos]);
 
     return (
         <div className='todo'>
-            <div className="todo-header">To-Do List</div>
+            <div className="todo-header">Lista de Tareas</div>
             <div className="todo-add">
-                <input ref={inputRef} type="text" placeholder='Add your task' className='todo-input' />
-                <div onClick={() => { add() }} className="todo-add-btn">ADD</div>
+                <input ref={inputRef} type="text" onKeyDown={HandleKeydown} placeholder='Agrega una tarea' className='todo-input' />
+                <div onClick={() => { add() }} className="todo-add-btn">++</div>
             </div>
             <div className="todo-list">
                 {todos.map((item, index) => {
-                    return <TodoItems key={index} no={item.no} display={item.display} text={item.text} />
+                    return <TodoItems key={index} setTodos={setTodos} no={item.no} display={item.display} text={item.text} />
                 })}
             </div>
         </div>
